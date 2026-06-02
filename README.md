@@ -162,8 +162,13 @@ tla/
 │       └── 010-settings-rescan/
 │
 ├── docs/
-│   └── specifications/
-│       └── tech_lead_assistant_spec.md   # Especificación completa
+│   ├── specifications/
+│   │   └── tech_lead_assistant_spec.md   # Especificación completa
+│   └── templates/                        # Plantillas y ejemplos para herramientas externas
+│       ├── content.example.json          # Ejemplo válido de content.json
+│       ├── profile.example.md            # Ejemplo de profile.md
+│       ├── notes.example.md              # Ejemplo de notas de reunión
+│       └── participants.example.json     # Ejemplo de participantes multi-miembro
 │
 ├── src/tla/
 │   ├── domain/                # Núcleo hexagonal (sin dependencias externas)
@@ -196,7 +201,8 @@ tla/
 ├── CLAUDE.md                  # Instrucciones para Claude Code
 ├── AGENTS.md                  # Convenciones del data_root para agentes externos
 ├── .env.example
-└── content.schema.json        # Schema JSON del content.json
+├── content.schema.json        # Schema JSON canónico del content.json
+└── content.guide.md           # Guía campo a campo del content.json
 ```
 
 ---
