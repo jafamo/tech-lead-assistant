@@ -1,9 +1,7 @@
 """Modelos SQLModel — índice SQLite de TLA."""
 
-from __future__ import annotations
-
 from datetime import date, datetime, time
-from typing import Optional
+from typing import List, Optional
 
 from sqlmodel import Field, Relationship, SQLModel
 
@@ -14,6 +12,16 @@ class User(SQLModel, table=True):
     password_hash: str
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class MeetingParticipant(SQLModel, table=True):
+    meeting_id: int = Field(foreign_key="meeting.id", primary_key=True)
+    team_member_id: int = Field(foreign_key="teammember.id", primary_key=True)
+
+
+class ReportMeeting(SQLModel, table=True):
+    report_id: int = Field(foreign_key="report.id", primary_key=True)
+    meeting_id: int = Field(foreign_key="meeting.id", primary_key=True)
 
 
 class TeamMember(SQLModel, table=True):
@@ -30,12 +38,12 @@ class TeamMember(SQLModel, table=True):
     updated_at: datetime = Field(default_factory=datetime.utcnow)
     last_indexed_at: Optional[datetime] = None
 
-    meetings: list["Meeting"] = Relationship(
+    meetings: List["Meeting"] = Relationship(
         back_populates="participants",
         link_model=MeetingParticipant,
     )
-    reports: list["Report"] = Relationship(back_populates="team_member")
-    scheduled_meetings: list["ScheduledMeeting"] = Relationship(back_populates="team_member")
+    reports: List["Report"] = Relationship(back_populates="team_member")
+    scheduled_meetings: List["ScheduledMeeting"] = Relationship(back_populates="team_member")
 
 
 class MeetingType(SQLModel, table=True):
@@ -45,8 +53,8 @@ class MeetingType(SQLModel, table=True):
     icon: Optional[str] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
-    meetings: list["Meeting"] = Relationship(back_populates="meeting_type")
-    scheduled_meetings: list["ScheduledMeeting"] = Relationship(back_populates="meeting_type")
+    meetings: List["Meeting"] = Relationship(back_populates="meeting_type")
+    scheduled_meetings: List["ScheduledMeeting"] = Relationship(back_populates="meeting_type")
 
 
 class Meeting(SQLModel, table=True):
@@ -62,19 +70,14 @@ class Meeting(SQLModel, table=True):
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
     meeting_type: Optional[MeetingType] = Relationship(back_populates="meetings")
-    participants: list[TeamMember] = Relationship(
+    participants: List[TeamMember] = Relationship(
         back_populates="meetings",
         link_model=MeetingParticipant,
     )
-    reports: list["Report"] = Relationship(
+    reports: List["Report"] = Relationship(
         back_populates="source_meetings",
         link_model=ReportMeeting,
     )
-
-
-class MeetingParticipant(SQLModel, table=True):
-    meeting_id: int = Field(foreign_key="meeting.id", primary_key=True)
-    team_member_id: int = Field(foreign_key="teammember.id", primary_key=True)
 
 
 class Report(SQLModel, table=True):
@@ -98,15 +101,10 @@ class Report(SQLModel, table=True):
     notes: Optional[str] = None
 
     team_member: Optional[TeamMember] = Relationship(back_populates="reports")
-    source_meetings: list[Meeting] = Relationship(
+    source_meetings: List[Meeting] = Relationship(
         back_populates="reports",
         link_model=ReportMeeting,
     )
-
-
-class ReportMeeting(SQLModel, table=True):
-    report_id: int = Field(foreign_key="report.id", primary_key=True)
-    meeting_id: int = Field(foreign_key="meeting.id", primary_key=True)
 
 
 class ScheduledMeeting(SQLModel, table=True):
