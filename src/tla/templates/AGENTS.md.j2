@@ -1,0 +1,62 @@
+# AGENTS.md — Tech Lead Assistant (TLA) v{{ version }}
+
+Este directorio (`data_root`) contiene los datos de **Tech Lead Assistant**. Está diseñado para que tanto la aplicación TLA como herramientas externas (Claude Code, Cursor, scripts ad-hoc) puedan leer y producir contenido de forma consistente.
+
+> ⚠️ Este fichero es mantenido automáticamente por la app. La sección **"User notes"** al final es la única que se preserva entre regeneraciones.
+
+---
+
+## Estructura de directorios
+
+```
+{data_root}/
+  AGENTS.md
+  README.md
+  templates/           # plantillas y ejemplos para herramientas externas
+  _import/             # staging dir para reports preparados externamente
+  _stats/current/      # estadísticas generadas por agentes externos
+  _stats/history/      # histórico de estadísticas
+  _archive/            # miembros archivados
+  _shared/meetings/    # reuniones multi-participante
+  {slug}/
+    profile/profile.md
+    oneToOne/          # YYYY-MM-DD.transcript.{ext}
+    seguimiento/
+    feedback/
+    tecnica/
+    retro/
+    notes/
+    reports/
+      {periodo}_v{N}_{modo}/
+        content.json   # datos estructurados (schema TLA)
+        report.md
+        report.pdf
+        charts/
+```
+
+---
+
+## content.json
+
+El fichero clave que produce cada report. Debe cumplir el schema publicado en `_published_schema/content.schema.json`.
+
+Referencias:
+- Ejemplo válido: `templates/content.example.json`
+- Guía campo a campo: ver `content.guide.md` en la raíz del proyecto TLA
+- Schema completo: `_published_schema/content.schema.json`
+
+---
+
+## Convenciones
+
+- **Slug**: lowercase, sin tildes, espacios → guiones. Colisión → sufijo numérico.
+- **Transcripción**: `YYYY-MM-DD.transcript.{ext}` (`.txt`, `.md`, `.vtt`, `.srt`)
+- **Notas**: `YYYY-MM-DD.notes.md`
+- **Report**: `{periodo}_v{N}_{modo}/` — modos: `llm`, `manual`, `imported`
+- **Escrituras**: siempre atómicas (write-temp + rename). Last-write-wins.
+
+---
+
+## User notes
+
+{{ user_notes }}
