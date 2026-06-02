@@ -6,7 +6,16 @@ from pathlib import Path
 
 from sqlmodel import Session, SQLModel, create_engine, select, text
 
-from tla.adapters.db.models import MeetingType
+from tla.adapters.db.models import (  # noqa: F401 — ensure all models are registered in metadata
+    Meeting,
+    MeetingParticipant,
+    MeetingType,
+    Report,
+    ReportMeeting,
+    ScheduledMeeting,
+    TeamMember,
+    User,
+)
 
 _MEETING_TYPES_SEED = [
     {"slug": "oneToOne", "display_name": "1:1", "icon": "message-circle"},

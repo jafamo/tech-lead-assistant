@@ -23,6 +23,13 @@ def require_auth(func: Callable) -> Callable:
 
 
 def run() -> None:
+    from nicegui import app as _app
+    from tla.adapters.db.database import init_db
+
+    @_app.on_startup
+    def _startup() -> None:
+        init_db(settings.db_path)
+
     from tla.adapters.ui.pages import login  # noqa: F401
     from tla.adapters.ui.pages import first_run  # noqa: F401
     from tla.adapters.ui.pages import settings as _settings_page  # noqa: F401
