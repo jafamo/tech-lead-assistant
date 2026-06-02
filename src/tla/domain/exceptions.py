@@ -51,3 +51,15 @@ class LLMProviderError(TLAError):
 
 class AtomicWriteError(TLAError):
     """Escritura atómica fallida."""
+
+
+class DuplicateTranscriptionError(TLAError):
+    """Ya existe una transcripción con ese contenido (mismo hash)."""
+
+
+class UnsupportedFileFormatError(TLAError):
+    """Formato de fichero no soportado."""
+
+
+class MeetingNotFoundError(TLAError):
+    """Reunión no encontrada."""
