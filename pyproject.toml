@@ -1,6 +1,6 @@
 [build-system]
 requires = ["setuptools>=70", "wheel"]
-build-backend = "setuptools.backends.legacy:build"
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "tech-lead-assistant"
@@ -23,6 +23,7 @@ dependencies = [
     "markdown-it-py>=3.0",
     "python-slugify>=8.0",
     "pydantic>=2.5",
+    "pydantic-settings>=2.0",
     "jsonschema>=4.21",
     "icalendar>=5.0",
 ]

@@ -1,7 +1,5 @@
 """Modelos SQLModel — índice SQLite de TLA."""
 
-from __future__ import annotations
-
 from datetime import date, datetime, time
 from typing import Optional
 
@@ -14,6 +12,16 @@ class User(SQLModel, table=True):
     password_hash: str
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class MeetingParticipant(SQLModel, table=True):
+    meeting_id: int = Field(foreign_key="meeting.id", primary_key=True)
+    team_member_id: int = Field(foreign_key="teammember.id", primary_key=True)
+
+
+class ReportMeeting(SQLModel, table=True):
+    report_id: int = Field(foreign_key="report.id", primary_key=True)
+    meeting_id: int = Field(foreign_key="meeting.id", primary_key=True)
 
 
 class TeamMember(SQLModel, table=True):
@@ -72,11 +80,6 @@ class Meeting(SQLModel, table=True):
     )
 
 
-class MeetingParticipant(SQLModel, table=True):
-    meeting_id: int = Field(foreign_key="meeting.id", primary_key=True)
-    team_member_id: int = Field(foreign_key="teammember.id", primary_key=True)
-
-
 class Report(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     team_member_id: int = Field(foreign_key="teammember.id", index=True)
@@ -102,11 +105,6 @@ class Report(SQLModel, table=True):
         back_populates="reports",
         link_model=ReportMeeting,
     )
-
-
-class ReportMeeting(SQLModel, table=True):
-    report_id: int = Field(foreign_key="report.id", primary_key=True)
-    meeting_id: int = Field(foreign_key="meeting.id", primary_key=True)
 
 
 class ScheduledMeeting(SQLModel, table=True):

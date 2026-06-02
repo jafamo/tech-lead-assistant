@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 
 from dotenv import load_dotenv
-from pydantic import field_validator
+from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 load_dotenv()
@@ -62,12 +62,20 @@ class Settings(BaseSettings):
     theme: str = "auto"
 
     def model_post_init(self, __context: object) -> None:
+        # Empty string from .env → restore OS default
+        if not self.db_path.name or str(self.db_path) in ("", "."):
+            object.__setattr__(self, "db_path", _DEFAULT_DB_PATH)
+        if not self.data_root.name or str(self.data_root) in ("", "."):
+            object.__setattr__(self, "data_root", _DEFAULT_DATA_ROOT)
+        if self.log_dir == Path(".") or str(self.log_dir) in ("", "."):
+            object.__setattr__(self, "log_dir", _DEFAULT_LOG_DIR)
+
         if self.reports_import_dir is None:
-            self.reports_import_dir = self.data_root / "_import"
+            object.__setattr__(self, "reports_import_dir", self.data_root / "_import")
         if self.stats_dir is None:
-            self.stats_dir = self.data_root / "_stats"
+            object.__setattr__(self, "stats_dir", self.data_root / "_stats")
         if self.stats_history_dir is None:
-            self.stats_history_dir = self.stats_dir / "history"
+            object.__setattr__(self, "stats_history_dir", self.stats_dir / "history")
 
     @field_validator("theme")
     @classmethod

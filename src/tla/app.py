@@ -25,7 +25,7 @@ def require_auth(func: Callable) -> Callable:
 def run() -> None:
     from tla.adapters.ui.pages import login  # noqa: F401
     from tla.adapters.ui.pages import first_run  # noqa: F401
-    from tla.adapters.ui.pages import settings  # noqa: F401
+    from tla.adapters.ui.pages import settings as _settings_page  # noqa: F401
 
     @ui.page("/")
     async def index() -> None:
