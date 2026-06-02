@@ -33,6 +33,8 @@ def run() -> None:
     from tla.adapters.ui.pages import login  # noqa: F401
     from tla.adapters.ui.pages import first_run  # noqa: F401
     from tla.adapters.ui.pages import settings as _settings_page  # noqa: F401
+    from tla.adapters.ui.pages import team as _team_page  # noqa: F401
+    from tla.adapters.ui.pages import team_detail as _team_detail_page  # noqa: F401
 
     @ui.page("/")
     async def index() -> None:
@@ -51,7 +53,8 @@ def run() -> None:
         elif not is_authenticated():
             ui.navigate.to("/login")
         else:
-            ui.label("Inicio — próximamente").classes("text-2xl")
+            ui.label("Tech Lead Assistant").classes("text-2xl font-bold mb-4")
+            ui.button("Ver equipo →", on_click=lambda: ui.navigate.to("/team")).classes("mt-2")
 
     ui.run(
         host=settings.host,

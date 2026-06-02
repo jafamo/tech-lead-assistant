@@ -21,6 +21,18 @@ class MemberNotFoundError(TLAError):
     """Miembro no encontrado."""
 
 
+class MemberAlreadyArchivedError(TLAError):
+    """El miembro ya está archivado."""
+
+
+class MemberNotArchivedError(TLAError):
+    """El miembro no está archivado."""
+
+
+class InvalidColorError(TLAError):
+    """Color hex inválido."""
+
+
 class ReportNotFoundError(TLAError):
     """Report no encontrado."""
 
