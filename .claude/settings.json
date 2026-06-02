@@ -1,0 +1,27 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // empty' | { read -r f; echo \"$f\" | grep -qE '(ai/context|ai/rules|ai/specs|docs/specifications)/' && printf '{\"hookSpecificOutput\":{\"hookEventName\":\"PostToolUse\",\"additionalContext\":\"Fichero de contexto modificado: %s — revisa si CLAUDE.md o AGENTS.md necesitan actualizarse.\"}}' \"$f\" || true; } 2>/dev/null || true",
+            "statusMessage": "Comprobando si hay que actualizar CLAUDE.md / AGENTS.md..."
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"UserPromptSubmit\",\"additionalContext\":\"Recuerda: CLAUDE.md contiene las reglas del proyecto. AGENTS.md define las convenciones del data_root para herramientas externas. Consúltalos si tu tarea afecta a la estructura del proyecto o al filesystem de datos.\"}}'",
+            "statusMessage": "Cargando contexto del proyecto..."
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,211 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tla.local/schemas/content.schema.json",
+  "title": "TLA Report Content",
+  "description": "Schema del fichero content.json de un report. Aplica a los tres modos: llm, manual, imported.",
+  "type": "object",
+  "required": ["metadata", "content"],
+  "additionalProperties": false,
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "required": [
+        "team_member_slug",
+        "period_start",
+        "period_end",
+        "version",
+        "generation_mode"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "team_member_slug": {
+          "type": "string",
+          "pattern": "^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$",
+          "description": "Slug normalizado de la persona. Debe coincidir con el nombre del directorio."
+        },
+        "period_start": {
+          "type": "string",
+          "format": "date",
+          "description": "Fecha de inicio del periodo cubierto por el report (ISO YYYY-MM-DD)."
+        },
+        "period_end": {
+          "type": "string",
+          "format": "date",
+          "description": "Fecha de fin del periodo (ISO YYYY-MM-DD), inclusiva."
+        },
+        "period_label": {
+          "type": "string",
+          "description": "Etiqueta legible del periodo: '2026-05', '2026-Q2', 'mayo-2026', etc."
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Número de versión del report dentro del mismo periodo y persona."
+        },
+        "generation_mode": {
+          "type": "string",
+          "enum": ["llm", "manual", "imported"],
+          "description": "Cómo se generó el report."
+        },
+        "llm_provider": {
+          "type": ["string", "null"],
+          "description": "Proveedor del LLM si generation_mode = 'llm'. anthropic | openai | ollama."
+        },
+        "llm_model": {
+          "type": ["string", "null"],
+          "description": "Modelo concreto usado si generation_mode = 'llm'."
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp ISO 8601 de creación del report."
+        },
+        "source_meetings": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "Ruta relativa a data_root de una transcripción usada como fuente."
+          },
+          "description": "Lista de transcripciones que se usaron como entrada para el report."
+        }
+      }
+    },
+    "content": {
+      "type": "object",
+      "required": ["summary"],
+      "additionalProperties": false,
+      "properties": {
+        "summary": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Resumen ejecutivo del periodo en 2-3 párrafos."
+        },
+        "key_themes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["theme"],
+            "additionalProperties": false,
+            "properties": {
+              "theme": {
+                "type": "string",
+                "description": "Descripción breve del tema (ej. 'Tech debt en servicio de pagos')."
+              },
+              "frequency": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Número de veces que el tema aparece en las transcripciones del periodo."
+              },
+              "evolution": {
+                "type": "string",
+                "enum": ["creciente", "estable", "decreciente"],
+                "description": "Tendencia del tema respecto al periodo anterior si hay datos."
+              },
+              "first_mentioned": {
+                "type": ["string", "null"],
+                "format": "date",
+                "description": "Primera fecha en que se menciona el tema en el histórico conocido."
+              }
+            }
+          }
+        },
+        "action_items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "open": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["description"],
+                "additionalProperties": false,
+                "properties": {
+                  "description": { "type": "string" },
+                  "owner": {
+                    "type": "string",
+                    "enum": ["member", "tech_lead"],
+                    "description": "Quién es responsable de cerrar el item."
+                  },
+                  "since": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Fecha en que se abrió el item."
+                  },
+                  "source_meetings": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                  }
+                }
+              }
+            },
+            "closed": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["description"],
+                "additionalProperties": false,
+                "properties": {
+                  "description": { "type": "string" },
+                  "owner": {
+                    "type": "string",
+                    "enum": ["member", "tech_lead"]
+                  },
+                  "closed_on": {
+                    "type": "string",
+                    "format": "date"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "growth_signals": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Señales positivas observadas: aprendizajes, ownership, iniciativas, etc."
+        },
+        "risks_and_concerns": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Riesgos, frustraciones, blockers, banderas rojas."
+        },
+        "sentiment": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "overall": {
+              "type": "string",
+              "enum": ["positivo", "neutral", "preocupado"]
+            },
+            "evolution": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["date", "score"],
+                "additionalProperties": false,
+                "properties": {
+                  "date": { "type": "string", "format": "date" },
+                  "score": {
+                    "type": "number",
+                    "minimum": -1,
+                    "maximum": 1,
+                    "description": "Score normalizado entre -1 (muy negativo) y 1 (muy positivo)."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "highlights": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Momentos destacados que merecen mencionarse en una performance review."
+        },
+        "next_1on1_brief": {
+          "type": "string",
+          "description": "Brief de 2-4 frases preparando la próxima 1:1: qué llevar, qué revisar."
+        }
+      }
+    }
+  }
+}

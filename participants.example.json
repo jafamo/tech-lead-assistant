@@ -1,0 +1,14 @@
+{
+  "meeting_title": "Retro Squad A — Sprint 23",
+  "meeting_type": "retro",
+  "meeting_date": "2026-05-20",
+  "duration_minutes": 60,
+  "participants": [
+    "maria-lopez",
+    "pedro-garcia",
+    "ana-fernandez",
+    "luis-martin"
+  ],
+  "facilitator": "maria-lopez",
+  "notes": "Retro del sprint con foco en deuda técnica acumulada."
+}
