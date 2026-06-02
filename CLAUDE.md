@@ -67,8 +67,14 @@ Commits: Conventional Commits — `feat:`, `fix:`, `refactor:`, `docs:`, `test:`
 ## Comandos útiles
 
 ```bash
-# Arrancar en modo dev
-python -m tla
+# Arrancar (modo dev, primer plano)
+./scripts/tla.sh
+
+# Arrancar como servicio systemd (instalar una vez)
+./scripts/tla-service.sh install
+./scripts/tla-service.sh start
+./scripts/tla-service.sh logs     # seguir logs
+./scripts/tla-service.sh stop
 
 # Tests
 pytest tests/
